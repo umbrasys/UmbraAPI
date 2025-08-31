@@ -76,7 +76,7 @@ public class MareModule : InteractionModuleBase
             }
             else
             {
-                // Loporrit - Register immediately
+                // Umbra - Register immediately
                 var user = new User();
 
                 var hasValidUid = false;
@@ -121,7 +121,7 @@ public class MareModule : InteractionModuleBase
                                       + Environment.NewLine + Environment.NewLine
                                       + $"**{computedHash}**"
                                       + Environment.NewLine + Environment.NewLine
-                                      + "Enter this key in Loporrit Sync and hit Connect / Reconnect."
+                                      + "Enter this key in Umbra Sync and hit Connect / Reconnect."
                                       + Environment.NewLine
                                       + "Have fun.");
 
@@ -209,7 +209,7 @@ public class MareModule : InteractionModuleBase
         }
     }
 
-    // Loporrit - Disable /verify command
+    // Umbra - Disable /verify command
     //[SlashCommand("verify", "Finishes the registration process for the Mare Synchronos server of this Discord")]
     public async Task Verify()
     {
@@ -246,7 +246,7 @@ public class MareModule : InteractionModuleBase
         }
     }
 
-    // Loporrit - Disable /verify command
+    // Umbra - Disable /verify command
     //[SlashCommand("verify_relink", "Finishes the relink process for your user on the Mare Synchronos server of this Discord")]
     public async Task VerifyRelink()
     {
@@ -766,7 +766,7 @@ public class MareModule : InteractionModuleBase
                                       + Environment.NewLine + Environment.NewLine
                                       + $"**{computedHash}**"
                                       + Environment.NewLine + Environment.NewLine
-                                      + "Enter this key in Loporrit Sync and hit save to connect to the service.");
+                                      + "Enter this key in Umbra Sync and hit save to connect to the service.");
 
                 await db.Auth.AddAsync(auth).ConfigureAwait(false);
                 await db.SaveChangesAsync().ConfigureAwait(false);

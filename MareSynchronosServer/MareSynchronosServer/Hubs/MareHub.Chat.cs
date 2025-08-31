@@ -34,7 +34,7 @@ public partial class MareHub
         if (group == null || sender == null) return;
 
         // TODO: Add and check chat permissions
-        if (group.Alias?.Equals("Loporrit", StringComparison.Ordinal) ?? false)
+        if (group.Alias?.Equals("Umbra", StringComparison.Ordinal) ?? false)
         {
             await Clients.Caller.Client_ReceiveServerMessage(MessageSeverity.Warning, $"Chat is disabled for syncshell '{dto.GroupAliasOrGID}'.").ConfigureAwait(false);
             return;
