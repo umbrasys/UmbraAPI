@@ -134,10 +134,13 @@ public class JwtController : Controller
         var tokenContent = tokenResponse as ContentResult;
         if (tokenContent == null)
             return tokenResponse;
+        var provider = HttpContext.RequestServices.GetService<DiscoveryWellKnownProvider>();
+        var wk = provider?.GetWellKnownJson(Request.Scheme, Request.Host.Value)
+            ?? _configuration.GetValueOrDefault(nameof(AuthServiceConfiguration.WellKnown), string.Empty);
         return Json(new AuthReplyDto
         {
             Token = tokenContent.Content,
-            WellKnown = _configuration.GetValueOrDefault(nameof(AuthServiceConfiguration.WellKnown), string.Empty),
+            WellKnown = wk,
         });
     }
 
@@ -190,4 +193,3 @@ public class JwtController : Controller
         return handler.CreateJwtSecurityToken(token);
     }
 }
-

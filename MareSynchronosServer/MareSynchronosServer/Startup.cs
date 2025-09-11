@@ -13,6 +13,7 @@ using Prometheus;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using Microsoft.AspNetCore.HttpOverrides;
 using StackExchange.Redis;
 using StackExchange.Redis.Extensions.Core.Configuration;
 using System.Net;
@@ -198,6 +199,21 @@ public class Startup
                     ValidateIssuerSigningKey = true,
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(config.GetValue<string>(nameof(MareConfigurationBase.Jwt)))),
                 };
+
+                // Allow SignalR WebSocket connections to authenticate via access_token query on the hub path
+                options.Events = new JwtBearerEvents
+                {
+                    OnMessageReceived = context =>
+                    {
+                        var accessToken = context.Request.Query["access_token"].ToString();
+                        var path = context.HttpContext.Request.Path;
+                        if (!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments(IMareHub.Path))
+                        {
+                            context.Token = accessToken;
+                        }
+                        return Task.CompletedTask;
+                    }
+                };
             });
 
         services.AddAuthentication(o =>
@@ -306,6 +322,12 @@ public class Startup
         logger.LogInformation("Running Configure");
 
         var config = app.ApplicationServices.GetRequiredService<IConfigurationService<MareConfigurationBase>>();
+
+        // Respect X-Forwarded-* headers from reverse proxies (required for correct scheme/host)
+        app.UseForwardedHeaders(new ForwardedHeadersOptions
+        {
+            ForwardedHeaders = ForwardedHeaders.XForwardedProto | ForwardedHeaders.XForwardedHost | ForwardedHeaders.XForwardedFor
+        });
 
         app.UseIpRateLimiting();
 

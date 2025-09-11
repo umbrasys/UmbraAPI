@@ -16,6 +16,7 @@ using System.Text;
 using MareSynchronosShared.Data;
 using Microsoft.EntityFrameworkCore;
 using Prometheus;
+using Microsoft.AspNetCore.HttpOverrides;
 using MareSynchronosShared.Utils.Configuration;
 
 namespace MareSynchronosAuthService;
@@ -34,6 +35,12 @@ public class Startup
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILogger<Startup> logger)
     {
         var config = app.ApplicationServices.GetRequiredService<IConfigurationService<MareConfigurationBase>>();
+
+        // Respect X-Forwarded-* headers from the reverse proxy so generated links use the public scheme/host
+        app.UseForwardedHeaders(new ForwardedHeadersOptions
+        {
+            ForwardedHeaders = ForwardedHeaders.XForwardedProto | ForwardedHeaders.XForwardedHost | ForwardedHeaders.XForwardedFor
+        });
 
         app.UseRouting();
 
@@ -65,8 +72,8 @@ public class Startup
 
         ConfigureRedis(services, mareConfig);
 
-        services.AddSingleton<SecretKeyAuthenticatorService>();
-        services.AddSingleton<AccountRegistrationService>();
+        services.AddScoped<SecretKeyAuthenticatorService>();
+        services.AddScoped<AccountRegistrationService>();
         services.AddSingleton<GeoIPService>();
 
         services.AddHostedService(provider => provider.GetRequiredService<GeoIPService>());
@@ -75,6 +82,11 @@ public class Startup
         services.Configure<MareConfigurationBase>(_configuration.GetRequiredSection("MareSynchronos"));
 
         services.AddSingleton<ServerTokenGenerator>();
+        // Nearby discovery services (well-known + presence)
+        services.AddSingleton<DiscoveryWellKnownProvider>();
+        services.AddHostedService(p => p.GetRequiredService<DiscoveryWellKnownProvider>());
+        services.AddSingleton<DiscoveryPresenceService>();
+        services.AddHostedService(p => p.GetRequiredService<DiscoveryPresenceService>());
 
         ConfigureAuthorization(services);
 
@@ -88,8 +100,11 @@ public class Startup
         services.AddControllers().ConfigureApplicationPartManager(a =>
         {
             a.FeatureProviders.Remove(a.FeatureProviders.OfType<ControllerFeatureProvider>().First());
-            a.FeatureProviders.Add(new AllowedControllersFeatureProvider(typeof(JwtController)));
+            a.FeatureProviders.Add(new AllowedControllersFeatureProvider(typeof(JwtController), typeof(WellKnownController), typeof(DiscoveryController)));
         });
+
+        services.AddSingleton<DiscoveryWellKnownProvider>();
+        services.AddHostedService(p => p.GetRequiredService<DiscoveryWellKnownProvider>());
     }
 
     private static void ConfigureAuthorization(IServiceCollection services)
