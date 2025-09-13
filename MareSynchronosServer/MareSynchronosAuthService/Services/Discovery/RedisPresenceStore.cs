@@ -100,6 +100,10 @@ public sealed class RedisPresenceStore : IDiscoveryPresenceStore
             if (p == null || string.IsNullOrEmpty(p.Uid)) return (false, null, string.Empty, null);
             if (string.Equals(p.Uid, requesterUid, StringComparison.Ordinal)) return (false, null, string.Empty, null);
 
+            // Refresh TTLs for this presence whenever it is matched
+            _db.KeyExpire(KeyForHash(hash), _presenceTtl);
+            _db.KeyExpire(KeyForUidSet(p.Uid), _presenceTtl);
+
             // Visible but requests disabled → return without token
             if (!p.AllowRequests)
             {
@@ -123,6 +127,28 @@ public sealed class RedisPresenceStore : IDiscoveryPresenceStore
         var val = _db.StringGet(key);
         if (!val.HasValue) return false;
         targetUid = val!;
+        try
+        {
+            var setKey = KeyForUidSet(targetUid);
+            var members = _db.SetMembers(setKey);
+            if (members is { Length: > 0 })
+            {
+                var batch = _db.CreateBatch();
+                foreach (var m in members)
+                {
+                    var h = (string)m;
+                    batch.KeyExpireAsync(KeyForHash(h), _presenceTtl);
+                }
+                batch.KeyExpireAsync(setKey, _presenceTtl);
+                batch.Execute();
+            }
+            else
+            {
+                // Still try to extend the set TTL even if empty
+                _db.KeyExpire(setKey, _presenceTtl);
+            }
+        }
+        catch { /* ignore TTL refresh issues */ }
         return true;
     }
 

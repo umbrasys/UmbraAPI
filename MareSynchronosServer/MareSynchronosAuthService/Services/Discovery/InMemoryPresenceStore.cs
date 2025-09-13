@@ -57,22 +57,26 @@ public sealed class InMemoryPresenceStore : IDiscoveryPresenceStore
     }
 
 public (bool Found, string? Token, string TargetUid, string? DisplayName) TryMatchAndIssueToken(string requesterUid, string hash)
+{
+    if (_presence.TryGetValue(hash, out var entry))
     {
-        if (_presence.TryGetValue(hash, out var entry))
-        {
-            if (string.Equals(entry.Uid, requesterUid, StringComparison.Ordinal))
-                return (false, null, string.Empty, null);
+        // Refresh TTL for this presence whenever it is matched (regardless of AllowRequests)
+        var refreshed = (entry.Uid, DateTimeOffset.UtcNow.Add(_presenceTtl), entry.DisplayName, entry.AllowRequests);
+        _presence[hash] = refreshed;
 
-            // Visible but requests disabled → no token
-            if (!entry.AllowRequests)
-                return (true, null, entry.Uid, entry.DisplayName);
+        if (string.Equals(entry.Uid, requesterUid, StringComparison.Ordinal))
+            return (false, null, string.Empty, null);
 
-            var token = Guid.NewGuid().ToString("N");
-            _tokens[token] = (entry.Uid, DateTimeOffset.UtcNow.Add(_tokenTtl));
-            return (true, token, entry.Uid, entry.DisplayName);
-        }
-        return (false, null, string.Empty, null);
+        // Visible but requests disabled → no token
+        if (!entry.AllowRequests)
+            return (true, null, entry.Uid, entry.DisplayName);
+
+        var token = Guid.NewGuid().ToString("N");
+        _tokens[token] = (entry.Uid, DateTimeOffset.UtcNow.Add(_tokenTtl));
+        return (true, token, entry.Uid, entry.DisplayName);
     }
+    return (false, null, string.Empty, null);
+}
 
     public bool ValidateToken(string token, out string targetUid)
     {
@@ -82,6 +86,18 @@ public (bool Found, string? Token, string TargetUid, string? DisplayName) TryMat
             if (info.ExpiresAt > DateTimeOffset.UtcNow)
             {
                 targetUid = info.TargetUid;
+
+                // Optional robustness: refresh TTL for all presence entries of this target
+                var newExp = DateTimeOffset.UtcNow.Add(_presenceTtl);
+                foreach (var kv in _presence.ToArray())
+                {
+                    if (string.Equals(kv.Value.Uid, targetUid, StringComparison.Ordinal))
+                    {
+                        var v = kv.Value;
+                        _presence[kv.Key] = (v.Uid, newExp, v.DisplayName, v.AllowRequests);
+                    }
+                }
+
                 return true;
             }
             _tokens.TryRemove(token, out _);
