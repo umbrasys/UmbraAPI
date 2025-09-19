@@ -113,7 +113,8 @@ public class JwtController : Controller
         }
 
         var existingIdent = await _redis.GetAsync<string>("UID:" + authResult.Uid);
-        if (!string.IsNullOrEmpty(existingIdent)) return Unauthorized("Already logged in to this account. Reconnect in 60 seconds. If you keep seeing this issue, restart your game.");
+        if (!string.IsNullOrEmpty(existingIdent) && !string.Equals(existingIdent, charaIdent, StringComparison.Ordinal))
+            return Unauthorized("Already logged in to this account. Reconnect in 60 seconds. If you keep seeing this issue, restart your game.");
 
         var token = CreateToken(new List<Claim>()
         {

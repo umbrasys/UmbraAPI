@@ -202,7 +202,7 @@ public partial class MareHub
     }
 
     [Authorize(Policy = "Identified")]
-    public async Task<GroupPasswordDto> GroupCreate()
+    public async Task<GroupPasswordDto> GroupCreate(string? alias)
     {
         _logger.LogCallInfo();
         var existingGroupsByUser = await DbContext.Groups.CountAsync(u => u.OwnerUID == UserUID).ConfigureAwait(false);
@@ -223,12 +223,23 @@ public partial class MareHub
         var sha = SHA256.Create();
         var hashedPw = StringUtils.Sha256String(passwd);
 
+        string? sanitizedAlias = null;
+        if (!string.IsNullOrWhiteSpace(alias))
+        {
+            sanitizedAlias = alias.Trim();
+            if (sanitizedAlias.Length > 50)
+            {
+                sanitizedAlias = sanitizedAlias[..50];
+            }
+        }
+
         Group newGroup = new()
         {
             GID = gid,
             HashedPassword = hashedPw,
             InvitesEnabled = true,
             OwnerUID = UserUID,
+            Alias = sanitizedAlias,
         };
 
         GroupPair initialPair = new()
