@@ -5,6 +5,7 @@ using MareSynchronosShared.Services;
 using MareSynchronosShared.Utils;
 using MareSynchronosShared.Utils.Configuration;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 namespace MareSynchronosServer.Services;
 
@@ -46,17 +47,38 @@ public class UserCleanupService : IHostedService
                 await PurgeUnusedAccounts(dbContext).ConfigureAwait(false);
 
                 await PurgeTempInvites(dbContext).ConfigureAwait(false);
+                await PurgeExpiredTemporaryGroups(dbContext).ConfigureAwait(false);
 
                 dbContext.SaveChanges();
             }
 
-            var now = DateTime.Now;
-            TimeOnly currentTime = new(now.Hour, now.Minute, now.Second);
-            TimeOnly futureTime = new(now.Hour, now.Minute - now.Minute % 10, 0);
-            var span = futureTime.AddMinutes(10) - currentTime;
+            var span = TimeSpan.FromMinutes(1);
+            var nextRun = DateTime.Now.Add(span);
 
-            _logger.LogInformation("User Cleanup Complete, next run at {date}", now.Add(span));
+            _logger.LogInformation("User Cleanup Complete, next run at {date}", nextRun);
             await Task.Delay(span, ct).ConfigureAwait(false);
+        }
+    }
+
+    private async Task PurgeExpiredTemporaryGroups(MareDbContext dbContext)
+    {
+        try
+        {
+            var now = DateTime.UtcNow;
+            var expiredGroups = await dbContext.Groups
+                .Where(g => g.IsTemporary && g.ExpiresAt != null && g.ExpiresAt <= now)
+                .ToListAsync()
+                .ConfigureAwait(false);
+
+            if (expiredGroups.Count == 0) return;
+
+            _logger.LogInformation("Cleaning up {count} expired temporary syncshells", expiredGroups.Count);
+
+            dbContext.Groups.RemoveRange(expiredGroups);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning(ex, "Error during temporary syncshell purge");
         }
     }
 
