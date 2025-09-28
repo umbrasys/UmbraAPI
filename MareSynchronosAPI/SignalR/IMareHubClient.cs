@@ -38,6 +38,8 @@ public interface IMareHubClient : IMareHub
 
     void OnUserChatMsg(Action<UserChatMsgDto> chatMsgDto);
 
+    void OnUserTypingState(Action<TypingStateDto> act);
+
     void OnUserReceiveCharacterData(Action<OnlineUserCharaDataDto> act);
 
     void OnUserReceiveUploadStatus(Action<UserDto> act);
