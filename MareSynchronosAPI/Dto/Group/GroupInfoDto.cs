@@ -10,6 +10,8 @@ public record GroupInfoDto(GroupData Group, UserData Owner, GroupPermissions Gro
 {
     public GroupPermissions GroupPermissions { get; set; } = GroupPermissions;
     public UserData Owner { get; set; } = Owner;
+    public bool AutoDetectVisible { get; set; }
+    public bool PasswordTemporarilyDisabled { get; set; }
 
     public string OwnerUID => Owner.UID;
     public string? OwnerAlias => Owner.Alias;
