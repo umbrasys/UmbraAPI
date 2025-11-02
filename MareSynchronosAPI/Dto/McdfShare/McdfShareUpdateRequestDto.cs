@@ -1,13 +1,15 @@
 using System;
 using System.Collections.Generic;
+using MessagePack;
 
 namespace MareSynchronos.API.Dto.McdfShare;
 
+[MessagePackObject]
 public class McdfShareUpdateRequestDto
 {
-    public Guid ShareId { get; set; }
-    public string Description { get; set; } = string.Empty;
-    public DateTime? ExpiresAtUtc { get; set; }
-    public List<string> AllowedIndividuals { get; set; } = [];
-    public List<string> AllowedSyncshells { get; set; } = [];
+    [Key(0)] public Guid ShareId { get; set; }
+    [Key(1)] public string Description { get; set; } = string.Empty;
+    [Key(2)] public DateTime? ExpiresAtUtc { get; set; }
+    [Key(3)] public List<string> AllowedIndividuals { get; set; } = [];
+    [Key(4)] public List<string> AllowedSyncshells { get; set; } = [];
 }
