@@ -131,6 +131,7 @@ public interface IMareHub
     Task UserSetProfile(UserProfileDto userDescription);
 
     Task UserSetTypingState(bool isTyping);
+    Task UserSetTypingState(bool isTyping, TypingScope scope);
     Task<CharaDataFullDto?> CharaDataCreate();
     Task<CharaDataFullDto?> CharaDataUpdate(CharaDataUpdateDto updateDto);
     Task<bool> CharaDataDelete(string id);
