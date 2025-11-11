@@ -1,0 +1,64 @@
+﻿using UmbraSync.API.Data;
+using UmbraSync.API.Data.Enum;
+using UmbraSync.API.Dto;
+using UmbraSync.API.Dto.CharaData;
+using UmbraSync.API.Dto.Chat;
+using UmbraSync.API.Dto.Group;
+using UmbraSync.API.Dto.User;
+
+namespace UmbraSync.API.SignalR;
+
+public interface IMareHubClient : IMareHub
+{
+    void OnDownloadReady(Action<Guid> act);
+
+    void OnGroupChangePermissions(Action<GroupPermissionDto> act);
+
+    void OnGroupChatMsg(Action<GroupChatMsgDto> groupChatMsgDto);
+
+    void OnGroupDelete(Action<GroupDto> act);
+
+    void OnGroupPairChangePermissions(Action<GroupPairUserPermissionDto> act);
+
+    void OnGroupPairChangeUserInfo(Action<GroupPairUserInfoDto> act);
+
+    void OnGroupPairJoined(Action<GroupPairFullInfoDto> act);
+
+    void OnGroupPairLeft(Action<GroupPairDto> act);
+
+    void OnGroupSendFullInfo(Action<GroupFullInfoDto> act);
+
+    void OnGroupSendInfo(Action<GroupInfoDto> act);
+
+    void OnReceiveServerMessage(Action<MessageSeverity, string> act);
+
+    void OnUpdateSystemInfo(Action<SystemInfoDto> act);
+
+    void OnUserAddClientPair(Action<UserPairDto> act);
+
+    void OnUserChatMsg(Action<UserChatMsgDto> chatMsgDto);
+
+    void OnUserTypingState(Action<TypingStateDto> act);
+
+    void OnUserReceiveCharacterData(Action<OnlineUserCharaDataDto> act);
+
+    void OnUserReceiveUploadStatus(Action<UserDto> act);
+
+    void OnUserRemoveClientPair(Action<UserDto> act);
+
+    void OnUserSendOffline(Action<UserDto> act);
+
+    void OnUserSendOnline(Action<OnlineUserIdentDto> act);
+
+    void OnUserUpdateOtherPairPermissions(Action<UserPermissionsDto> act);
+
+    void OnUserUpdateProfile(Action<UserDto> act);
+
+    void OnUserUpdateSelfPairPermissions(Action<UserPermissionsDto> act);
+
+    void OnGposeLobbyJoin(Action<UserData> act);
+    void OnGposeLobbyLeave(Action<UserData> act);
+    void OnGposeLobbyPushCharacterData(Action<CharaDataDownloadDto> act);
+    void OnGposeLobbyPushPoseData(Action<UserData, PoseData> act);
+    void OnGposeLobbyPushWorldData(Action<UserData, WorldData> act);
+}
