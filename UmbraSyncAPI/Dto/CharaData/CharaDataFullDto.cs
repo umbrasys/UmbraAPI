@@ -1,4 +1,5 @@
-﻿using UmbraSync.API.Data;
+﻿using System.Collections.Generic;
+using UmbraSync.API.Data;
 using MessagePack;
 
 namespace UmbraSync.API.Dto.CharaData;
@@ -12,11 +13,11 @@ public record CharaDataFullDto(string Id, UserData Uploader) : CharaDataDto(Id, 
     public string CustomizeData { get; set; } = string.Empty;
     public string ManipulationData { get; set; } = string.Empty;
     public int DownloadCount { get; set; } = 0;
-    public List<UserData> AllowedUsers { get; set; } = [];
-    public List<GroupData> AllowedGroups { get; set; } = [];
+    public IReadOnlyList<UserData> AllowedUsers { get; set; } = Array.Empty<UserData>();
+    public IReadOnlyList<GroupData> AllowedGroups { get; set; } = Array.Empty<GroupData>();
     public List<GamePathEntry> FileGamePaths { get; set; } = [];
     public List<GamePathEntry> FileSwaps { get; set; } = [];
-    public List<GamePathEntry> OriginalFiles { get; set; } = [];
+    public IReadOnlyList<GamePathEntry> OriginalFiles { get; set; } = Array.Empty<GamePathEntry>();
     public AccessTypeDto AccessType { get; set; }
     public ShareTypeDto ShareType { get; set; }
     public List<PoseEntry> PoseData { get; set; } = [];

@@ -16,6 +16,6 @@ public class McdfShareEntryDto
     [Key(6)] public string OwnerUid { get; set; } = string.Empty;
     [Key(7)] public string OwnerAlias { get; set; } = string.Empty;
     [Key(8)] public int DownloadCount { get; set; }
-    [Key(9)] public List<string> AllowedIndividuals { get; set; } = [];
-    [Key(10)] public List<string> AllowedSyncshells { get; set; } = [];
+    [Key(9)] public IReadOnlyList<string> AllowedIndividuals { get; set; } = Array.Empty<string>();
+    [Key(10)] public IReadOnlyList<string> AllowedSyncshells { get; set; } = Array.Empty<string>();
 }
