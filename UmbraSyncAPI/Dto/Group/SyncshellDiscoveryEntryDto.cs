@@ -12,4 +12,5 @@ public sealed record SyncshellDiscoveryEntryDto
     public int MemberCount { get; init; }
     public bool AutoAcceptPairs { get; init; }
     public string? Description { get; init; }
+    public int MaxUserCount { get; init; }
 }

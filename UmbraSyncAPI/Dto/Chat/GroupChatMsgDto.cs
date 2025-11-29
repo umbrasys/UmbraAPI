@@ -1,13 +1,23 @@
+using System.Text.Json.Serialization;
 using UmbraSync.API.Data;
 using UmbraSync.API.Dto.Group;
-using UmbraSync.API.Dto.User;
 using MessagePack;
 
 namespace UmbraSync.API.Dto.Chat;
 
 [MessagePackObject(keyAsPropertyName: true)]
-public record GroupChatMsgDto(GroupDto Group, SignedChatMessage Message)
+public record GroupChatMsgDto
 {
-    public GroupDto Group = Group;
-    public SignedChatMessage Message = Message;
+    [JsonConstructor]
+    public GroupChatMsgDto(GroupDto group, SignedChatMessage message)
+    {
+        Group = group;
+        Message = message;
+    }
+
+    [Key(nameof(Group))]
+    public GroupDto Group { get; init; }
+
+    [Key(nameof(Message))]
+    public SignedChatMessage Message { get; init; }
 }
