@@ -131,6 +131,10 @@ public interface IMareHub
     Task UserSetProfile(UserProfileDto userDescription);
 
     Task UserSetTypingState(bool isTyping, TypingScope scope);
+    // Extended typing: allows routing by scope/channel/target
+    Task UserSetTypingStateEx(TypingStateExDto dto);
+    // Update channel memberships for typing (IDs provided by client/Dalamud)
+    Task UserUpdateTypingChannels(TypingChannelsDto channels);
     Task<CharaDataFullDto?> CharaDataCreate();
     Task<CharaDataFullDto?> CharaDataUpdate(CharaDataUpdateDto updateDto);
     Task<bool> CharaDataDelete(string id);

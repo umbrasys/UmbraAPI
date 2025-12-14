@@ -7,5 +7,6 @@ public enum TypingScope
     Party = 2,
     CrossParty = 3,
     FreeCompany = 4,
-    Alliance = 5
+    Alliance = 5,
+    Whisper = 6
 }
