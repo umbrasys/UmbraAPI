@@ -8,4 +8,5 @@ public enum GroupPermissions
     DisableSounds = 0x2,
     DisableInvites = 0x4,
     DisableVFX = 0x8,
+    Paused = 0x10,
 }
