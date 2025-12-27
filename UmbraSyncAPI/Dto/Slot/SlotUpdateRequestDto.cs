@@ -1,0 +1,15 @@
+using MessagePack;
+using UmbraSync.API.Dto.Group;
+
+namespace UmbraSync.API.Dto.Slot;
+
+[MessagePackObject(keyAsPropertyName: true)]
+public record SlotUpdateRequestDto
+{
+    public GroupDto Group { get; init; } = null!;
+    public Guid SlotId { get; init; }
+    public string SlotName { get; init; } = string.Empty;
+    public string? SlotDescription { get; init; }
+    public SlotLocationDto? Location { get; init; }
+    public bool IsDelete { get; init; } = false;
+}
