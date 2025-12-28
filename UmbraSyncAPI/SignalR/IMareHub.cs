@@ -5,7 +5,6 @@ using UmbraSync.API.Dto.CharaData;
 using UmbraSync.API.Dto.Chat;
 using UmbraSync.API.Dto.Group;
 using UmbraSync.API.Dto.User;
-using UmbraSync.API.Dto.Slot;
 
 namespace UmbraSync.API.SignalR;
 
@@ -151,13 +150,4 @@ public interface IMareHub
     Task GposeLobbyPushCharacterData(CharaDataDownloadDto charaDownloadDto);
     Task GposeLobbyPushPoseData(PoseData poseData);
     Task GposeLobbyPushWorldData(WorldData worldData);
-    Task<List<SyncshellDiscoveryEntryDto>> SyncshellDiscoveryList();
-    Task<SyncshellDiscoveryStateDto?> SyncshellDiscoveryGetState(GroupDto group);
-    Task<bool> SyncshellDiscoverySetVisibility(SyncshellDiscoveryVisibilityRequestDto request);
-    Task<bool> SyncshellDiscoverySetPolicy(SyncshellDiscoverySetPolicyRequestDto request);
-    Task<bool> SyncshellDiscoveryJoin(GroupDto group);
-    Task<SlotInfoResponseDto?> SlotGetInfo(SlotLocationDto location);
-    Task<SlotInfoResponseDto?> SlotGetNearby(uint serverId, uint territoryId, float x, float y, float z);
-    Task<bool> SlotUpdate(SlotUpdateRequestDto request);
-    Task<List<SlotInfoResponseDto>> SlotGetInfoForGroup(GroupDto group);
 }
