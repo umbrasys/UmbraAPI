@@ -4,6 +4,7 @@ using UmbraSync.API.Dto;
 using UmbraSync.API.Dto.CharaData;
 using UmbraSync.API.Dto.Chat;
 using UmbraSync.API.Dto.Group;
+using UmbraSync.API.Dto.Slot;
 using UmbraSync.API.Dto.User;
 
 namespace UmbraSync.API.SignalR;
