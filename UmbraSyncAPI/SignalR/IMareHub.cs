@@ -111,7 +111,6 @@ public interface IMareHub
 
     Task UserAddPair(UserDto user);
 
-    Task UserChatSendMsg(UserDto user, ChatMessage message);
 
     Task UserDelete();
 
