@@ -1,6 +1,5 @@
-using UmbraSync.API.Data;
-using UmbraSync.API.Dto.User;
 using MessagePack;
+using UmbraSync.API.Data;
 
 namespace UmbraSync.API.Dto.Chat;
 

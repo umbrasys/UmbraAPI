@@ -1,6 +1,5 @@
-﻿using System;
+﻿using MessagePack;
 using UmbraSync.API.Data;
-using MessagePack;
 
 namespace UmbraSync.API.Dto.Group;
 

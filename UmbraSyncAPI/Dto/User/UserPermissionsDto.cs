@@ -1,6 +1,6 @@
-﻿using UmbraSync.API.Data;
+﻿using MessagePack;
+using UmbraSync.API.Data;
 using UmbraSync.API.Data.Enum;
-using MessagePack;
 
 namespace UmbraSync.API.Dto.User;
 

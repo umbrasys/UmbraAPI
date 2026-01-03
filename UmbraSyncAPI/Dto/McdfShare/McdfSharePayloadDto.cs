@@ -1,4 +1,3 @@
-using System;
 using MessagePack;
 
 namespace UmbraSync.API.Dto.McdfShare;

@@ -7,7 +7,7 @@ public sealed record SyncshellDiscoveryVisibilityRequestDto
 {
     public string GID { get; init; } = string.Empty;
     public bool AutoDetectVisible { get; init; }
-    
+
     public int? DisplayDurationHours { get; init; }
     public int[]? ActiveWeekdays { get; init; }
     public string? TimeStartLocal { get; init; }

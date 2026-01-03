@@ -1,7 +1,7 @@
+using MessagePack;
 using System.Text.Json.Serialization;
 using UmbraSync.API.Data;
 using UmbraSync.API.Dto.Group;
-using MessagePack;
 
 namespace UmbraSync.API.Dto.Chat;
 
