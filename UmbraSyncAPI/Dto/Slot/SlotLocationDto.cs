@@ -7,6 +7,7 @@ public record SlotLocationDto
 {
     public uint ServerId { get; init; }
     public uint TerritoryId { get; init; }
+    public uint DivisionId { get; init; }
     public uint WardId { get; init; }
     public uint PlotId { get; init; }
     public float X { get; init; }
